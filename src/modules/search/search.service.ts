@@ -1,7 +1,7 @@
 import { WriteResponseBase } from '@elastic/elasticsearch/lib/api/types';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 
-export abstract class BaseSearchService {
+export abstract class SearchService {
   protected readonly indexEntity: string;
 
   constructor(protected readonly elasticsearchService: ElasticsearchService) {}

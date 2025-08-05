@@ -3,9 +3,9 @@ services:
     image: elasticsearch:9.1.0
     environment:
       - ES_JAVA_OPTS=-Xms2g -Xmx2g
-    ports:
-      - '9200:9200'
-      - '9300:9300'
+    expose:
+      - '9200'
+      - '9300'
     deploy:
       resources:
         limits:

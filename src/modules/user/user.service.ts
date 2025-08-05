@@ -1,21 +1,35 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserFilters, UserRepository } from './user.repository';
-import { UserSearchService } from '../search/usersearch.service';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
+import { PrismaService } from '../prisma/prisma.service';
+import { User } from '@prisma/client';
+import { SearchService } from '../search/search.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly userSearch: UserSearchService,
+    private readonly searchService: SearchService,
+    private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = await this.userRepository.create(createUserDto);
-    await this.userSearch.index(user.id, createUserDto);
+    let user: User | null = null;
+
+    await this.prisma.$transaction(async (tx) => {
+      user = await tx.user.create({ data: createUserDto });
+
+      try {
+        await this.searchService.index(user.id, createUserDto);
+      } catch {
+        throw new Error(
+          'Error while indexing in Elasticsearch. User not created.',
+        );
+      }
+    });
 
     await this.cacheManager.clear();
 
@@ -23,7 +37,7 @@ export class UserService {
   }
 
   findMany(filters: UserFilters) {
-    return this.userSearch.search(filters.search ?? '');
+    return this.searchService.search(filters.search ?? '');
   }
 
   findOne(id: string) {

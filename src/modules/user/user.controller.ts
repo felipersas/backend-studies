@@ -12,12 +12,15 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserFilters } from './user.repository';
 import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { CustomCacheInterceptor } from '../../common/interceptors/custom-cache.interceptor';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiBody({ type: CreateUserDto })
   async create(@Body() createUserDto: CreateUserDto) {
     const data = await this.userService.create(createUserDto);
     return data;

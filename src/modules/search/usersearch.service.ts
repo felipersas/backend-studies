@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 
 import { CreateUserDto } from '../user/dto/create-user.dto';
-import { BaseSearchService } from './base.search.service';
+import { SearchService } from './search.service';
 
 @Injectable()
-export class UserSearchService extends BaseSearchService {
+export class UserSearchService extends SearchService {
   protected readonly indexEntity = 'users';
 
   constructor(protected readonly elasticsearchService: ElasticsearchService) {
@@ -19,7 +19,7 @@ export class UserSearchService extends BaseSearchService {
         multi_match: {
           query: search,
           fields: ['name', 'email'],
-          fuzziness: 'AUTO', // Permite correspondência aproximada
+          fuzziness: 'AUTO',
         },
       },
     });
