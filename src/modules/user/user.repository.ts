@@ -28,11 +28,7 @@ export class UserRepository extends BaseRepository<
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     return this.prisma.user.create({
-      data: {
-        ...createUserDto,
-        searchable:
-          `${createUserDto.email} ${createUserDto.name}`.toLowerCase(),
-      },
+      data: createUserDto,
     });
   }
 
@@ -40,11 +36,7 @@ export class UserRepository extends BaseRepository<
     this.logOperation('Update', 'User', id);
     return this.prisma.user.update({
       where: { id },
-      data: {
-        ...updateUserDto,
-        searchable:
-          `${updateUserDto.email || ''} ${updateUserDto.name || ''}`.toLowerCase(),
-      },
+      data: updateUserDto,
     });
   }
 
@@ -81,9 +73,6 @@ export class UserRepository extends BaseRepository<
       ...(filters.createdBefore && {
         createdAt: { lte: filters.createdBefore },
       }),
-      searchable: {
-        search: filters.search,
-      },
     };
 
     const [data, total] = await Promise.all([
