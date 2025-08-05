@@ -14,7 +14,7 @@ import { CacheKey, CacheTTL } from '@nestjs/cache-manager';
 import { CustomCacheInterceptor } from '../../common/interceptors/custom-cache.interceptor';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 
-@ApiTags('user')
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -23,7 +23,10 @@ export class UserController {
   @ApiBody({ type: CreateUserDto })
   async create(@Body() createUserDto: CreateUserDto) {
     const data = await this.userService.create(createUserDto);
-    return data;
+    return {
+      message: 'User created successfully',
+      data,
+    };
   }
 
   @UseInterceptors(CustomCacheInterceptor)

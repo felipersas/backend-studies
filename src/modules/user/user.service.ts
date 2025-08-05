@@ -6,6 +6,7 @@ import { Cache } from 'cache-manager';
 import { PrismaService } from '../prisma/prisma.service';
 import { User } from '@prisma/client';
 import { SearchService } from '../search/search.service';
+import { Conflict } from 'src/common/errors/conflict';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,10 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     let user: User | null = null;
+
+    const hasUser = await this.userRepository.findByEmail(createUserDto.email);
+
+    if (hasUser) throw new Conflict('User with this email already exists.');
 
     await this.prisma.$transaction(async (tx) => {
       user = await tx.user.create({ data: createUserDto });
