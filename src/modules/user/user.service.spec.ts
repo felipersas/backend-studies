@@ -21,8 +21,8 @@ describe('UserService', () => {
     };
 
     const mockUserSearch = {
-      indexUser: jest.fn(),
-      searchUsers: jest.fn(),
+      index: jest.fn(),
+      search: jest.fn(),
     };
 
     cacheManager = { clear: jest.fn() };
@@ -54,10 +54,7 @@ describe('UserService', () => {
     const result = await service.create(createUserDto);
 
     expect(repository['create']).toHaveBeenCalledWith(createUserDto);
-    expect(userSearch['indexUser']).toHaveBeenCalledWith(
-      user.id,
-      createUserDto,
-    );
+    expect(userSearch['index']).toHaveBeenCalledWith(user.id, createUserDto);
     expect(cacheManager.clear).toHaveBeenCalled();
     expect(result).toEqual(user);
   });
@@ -66,11 +63,11 @@ describe('UserService', () => {
     const filters = { search: 'test' };
     const searchResults = [UserFactory.user()];
 
-    userSearch.searchUsers = jest.fn().mockResolvedValue(searchResults);
+    userSearch.search = jest.fn().mockResolvedValue(searchResults);
 
     const result = await service.findMany(filters);
 
-    expect(userSearch['searchUsers']).toHaveBeenCalledWith(filters.search);
+    expect(userSearch['search']).toHaveBeenCalledWith(filters.search);
     expect(result).toEqual(searchResults);
   });
 

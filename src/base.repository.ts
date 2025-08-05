@@ -59,11 +59,6 @@ export abstract class BaseRepository<T, CreateDto, UpdateDto> {
 
   abstract create(createDto: CreateDto): Promise<T>;
 
-  abstract findMany(
-    options?: PaginationOptions,
-    filters?: any,
-  ): Promise<PaginatedResult<T>>;
-
   abstract findOne(id: string): Promise<T | null>;
 
   abstract update(id: string, updateDto: UpdateDto): Promise<T>;

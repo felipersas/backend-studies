@@ -1,8 +1,4 @@
-import {
-  BaseRepository,
-  PaginatedResult,
-  PaginationOptions,
-} from '../../base.repository';
+import { BaseRepository } from '../../base.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Prisma, User } from '@prisma/client';
@@ -58,45 +54,6 @@ export class UserRepository extends BaseRepository<
         },
       },
     });
-  }
-
-  async findMany(
-    options: PaginationOptions = {},
-    filters: UserFilters = {},
-  ): Promise<PaginatedResult<User>> {
-    const { page = 1, limit = 10, sortBy, sortOrder = 'desc' } = options;
-    const skip = (page - 1) * limit;
-
-    const where: Prisma.UserWhereInput = {
-      ...(filters.isActive !== undefined && { isActive: filters.isActive }),
-      ...(filters.createdAfter && { createdAt: { gte: filters.createdAfter } }),
-      ...(filters.createdBefore && {
-        createdAt: { lte: filters.createdBefore },
-      }),
-    };
-
-    const [data, total] = await Promise.all([
-      this.prisma.user.findMany({
-        where,
-
-        skip,
-        take: limit,
-        orderBy: this.buildOrderBy(sortBy, sortOrder),
-        include: {
-          _count: {
-            select: {
-              posts: true,
-            },
-          },
-        },
-      }),
-      this.count(where),
-    ]);
-
-    return {
-      data,
-      meta: this.buildPaginationMeta(total, page, limit),
-    };
   }
 
   async count(where: Prisma.UserWhereInput): Promise<number> {
