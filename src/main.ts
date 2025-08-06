@@ -1,9 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {
+  DocumentBuilder,
+  SwaggerCustomOptions,
+  SwaggerModule,
+} from '@nestjs/swagger';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,7 +20,19 @@ async function bootstrap() {
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory());
+
+  const theme = new SwaggerTheme();
+
+  const myCustom: SwaggerCustomOptions = {
+    customSiteTitle: 'Swagger dark mode',
+    customCss: theme.getBuffer(SwaggerThemeNameEnum.GRUVBOX),
+    swaggerOptions: {
+      docExpansion: 'none',
+      apisSorter: 'alpha',
+    },
+  };
+
+  SwaggerModule.setup('api', app, documentFactory(), myCustom);
 
   app.useGlobalPipes(
     new ValidationPipe({

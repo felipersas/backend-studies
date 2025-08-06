@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { PrismaService } from './modules/prisma/prisma.service';
 
 export interface BaseEntity {
@@ -57,7 +58,10 @@ export abstract class BaseRepository<T, CreateDto, UpdateDto> {
     );
   }
 
-  abstract create(createDto: CreateDto): Promise<T>;
+  abstract create(
+    createDto: CreateDto,
+    tx?: Prisma.TransactionClient,
+  ): Promise<T>;
 
   abstract findOne(id: string): Promise<T | null>;
 

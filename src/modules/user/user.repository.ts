@@ -22,10 +22,14 @@ export class UserRepository extends BaseRepository<
     super(prisma);
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    return this.prisma.user.create({
-      data: createUserDto,
-    });
+  async create(
+    data: CreateUserDto,
+    tx?: Prisma.TransactionClient,
+  ): Promise<User> {
+    if (tx) {
+      return tx.user.create({ data });
+    }
+    return this.prisma.user.create({ data });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {

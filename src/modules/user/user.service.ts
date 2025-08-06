@@ -25,7 +25,7 @@ export class UserService {
     if (hasUser) throw new Conflict('User with this email already exists.');
 
     await this.prisma.$transaction(async (tx) => {
-      user = await tx.user.create({ data: createUserDto });
+      user = await this.userRepository.create(createUserDto, tx);
 
       try {
         await this.searchService.index(user.id, createUserDto);
