@@ -32,6 +32,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof Error) {
       message = exception.message || message;
     }
+    console.log(message);
 
     response.status(status).json({
       success: false,
