@@ -6,6 +6,7 @@ import { PrismaService } from './modules/prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { SearchModule } from './modules/search/search.module';
 import { CacheModule } from '@nestjs/cache-manager';
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CacheModule } from '@nestjs/cache-manager';
     CacheModule.register({
       isGlobal: true,
     }),
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

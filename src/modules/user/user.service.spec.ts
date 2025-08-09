@@ -71,11 +71,11 @@ describe('UserService', () => {
 
     const result = await service.create(createUserDto);
 
-    expect(repository['create']).toHaveBeenCalledWith(
+    expect(repository.create).toHaveBeenCalledWith(
       createUserDto,
       expect.any(Object),
     );
-    expect(searchService['index']).toHaveBeenCalledWith(user.id, createUserDto);
+    expect(searchService.index).toHaveBeenCalledWith(user.id, createUserDto);
     expect(cacheManager.clear).toHaveBeenCalled();
     expect(result).toEqual(user);
   });
@@ -87,8 +87,8 @@ describe('UserService', () => {
 
     await expect(service.create(createUserDto)).rejects.toThrow(Conflict);
 
-    expect(repository['create']).not.toHaveBeenCalledWith(createUserDto);
-    expect(searchService['index']).not.toHaveBeenCalledWith(
+    expect(repository.create).not.toHaveBeenCalledWith(createUserDto);
+    expect(searchService.index).not.toHaveBeenCalledWith(
       user.id,
       createUserDto,
     );
@@ -103,7 +103,7 @@ describe('UserService', () => {
 
     const result = await service.findMany(filters);
 
-    expect(searchService['search']).toHaveBeenCalledWith(filters.search);
+    expect(searchService.search).toHaveBeenCalledWith(filters.search);
     expect(result).toEqual(searchResults);
   });
 
@@ -115,7 +115,7 @@ describe('UserService', () => {
 
     const result = await service.findOne(userId);
 
-    expect(repository['findOne']).toHaveBeenCalledWith(userId);
+    expect(repository.findOne).toHaveBeenCalledWith(userId);
     expect(result).toEqual(user);
   });
 });
